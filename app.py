@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-PDF_DIR = "book/Science Class IX"
+PDF_DIR = "book\Science Class IX"
 
 # --- Step 1: Load and Combine PDFs ---
 @st.cache_data
