@@ -12,7 +12,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 PDF_DIR = "book/Science Class IX"
 
-# --- Step 1: Load and Combine PDFs ---
+
 @st.cache_data
 def load_all_pdfs(pdf_dir):
     all_text = []
@@ -25,7 +25,7 @@ def load_all_pdfs(pdf_dir):
                     all_text.append(page_text)
     return "\n".join(all_text)
 
-# --- Step 2: Chunk Content ---
+
 def chunk_text(text, chunk_size=500):
     paragraphs = [p.strip() for p in text.split("\n") if len(p.strip()) > 50]
     chunks = []
@@ -40,7 +40,7 @@ def chunk_text(text, chunk_size=500):
         chunks.append(current_chunk.strip())
     return chunks
 
-# --- Step 3: Embedding & Indexing ---
+
 @st.cache_resource
 def embed_and_index(chunks):
     model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -54,7 +54,7 @@ def retrieve_chunks(query, model, index, chunks, k=5):
     _, I = index.search(np.array(query_emb), k)
     return [chunks[i] for i in I[0]]
 
-# --- Step 4: Generate LLM Response ---
+
 def generate_response(context, question, profile):
     prefix = "Explain in a simple tone as the student struggles with Physics." if profile == "weak" else "Explain in a concise and technical tone."
 
@@ -75,13 +75,13 @@ Answer:"""
     )
     return response.choices[0].message.content
 
-# --- Streamlit UI ---
-st.title("📗 Class 9 Science Tutor (NCERT)")
+
+st.title("Class 9 Science(NCERT)")
 st.markdown("Ask questions from the entire Class 9 Science syllabus")
 
 profile = st.selectbox("Select your learning level:", ["weak", "strong"], format_func=lambda x: "Weak in Physics" if x=="weak" else "Strong in Physics")
 
-user_query = st.text_input("🔍 Ask your question:")
+user_query = st.text_input(" Ask your question:")
 
 # Load, Chunk, Embed
 with st.spinner("Loading textbook..."):
@@ -96,14 +96,14 @@ if user_query:
         context = "\n\n".join(top_chunks)
         answer = generate_response(context, user_query, profile)
 
-        st.markdown("### ✅ Answer")
+        st.markdown("###  Answer")
         st.write(answer)
 
-        with st.expander("📚 Context Chunks Used"):
+        with st.expander("Context Chunks Used"):
             for i, chunk in enumerate(top_chunks, 1):
                 st.markdown(f"**Chunk {i}:**\n{chunk}")
 
-        with st.expander("📌 Log Info"):
+        with st.expander(" Log Info"):
             st.json({
                 "Query": user_query,
                 "Profile": profile,
